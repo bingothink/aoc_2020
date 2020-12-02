@@ -42,13 +42,17 @@ INPUT = "day1_input.txt"
 
 # Part 1
 def Part1(inp):
+    # read input as ints
     f = [int(i.strip()) for i in open(inp, 'r').readlines()]
+    # return x*y if they add to 2020
     print([f[x]*f[y] for x in range(len(f)) for y in range(x+1, len(f)) if (f[x]+f[y] == 2020)])
 
 
 # Part 2
 def Part2(inp):
+    # read input as ints
     f = [int(i.strip()) for i in open(inp, 'r').readlines()]
+    # return x*y*z if they add to 2020
     print([f[x]*f[y]*f[z] for x in range(len(f)) for y in range(x+1, len(f)) for z in range(y+1, len(f)) if (f[x]+f[y]+f[z] == 2020)])
 
 print("Part 1:")

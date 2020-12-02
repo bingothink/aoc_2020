@@ -42,28 +42,49 @@ Both parts of this puzzle are complete! They provide two gold stars: **
 
 INPUT = "day2_input.txt"
 
-# get input
+# get input in format:
+# 1-3 a: abcde     => ['1', '3', 'a', 'abcde']
+# 1-3 b: cdefg     => ['1', '3', 'b', 'cdefg']
+# 2-9 c: ccccccccc => ['2', '9', 'c', 'ccccccccc']
 inp = []
 for l in open(INPUT).readlines():
+    # strip, remove colon, replace dash with space, and split on spaces
     inp.append(l.strip().replace(':','').replace('-', ' ').split(' '))
 
+# part 1 validation
 def ValidateP1(i):
+    # i[0]: first index
+    # i[1]: second index
+    # i[2]: letter
+    # i[3]: password
+
+    # count number of letter (i[2]) occurrences in string (i[3])
     cnt = i[3].count(i[2])
+    # ensure count is within i[0] and i[1] bounds
     if cnt < int(i[0]) or cnt > int(i[1]):
         return 0
     else:
         return 1
 
 def Part1():
+    # init valid count
     valid = 0
     for i in inp:
+        # ValidateP1 will return 1 or 0 if valid or not, respectively. Just add them up. 
         valid += ValidateP1(i)
     return valid
     
 
 def Part2():
+    # i[0]: first index
+    # i[1]: second index
+    # i[2]: letter
+    # i[3]: password
     valid = 0
     for i in inp:
+        # "one or the other but not both" == XOR
+        # i[3] string index at i[0]-1 (1-based) is equal to the letter XOR
+        # i[3] string index at i[1]-1 (1-based) is equal to the letter
         if (i[3][int(i[0])-1] == i[2]) ^ (i[3][int(i[1])-1] == i[2]):
             valid += 1
     return valid

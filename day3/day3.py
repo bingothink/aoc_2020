@@ -102,7 +102,7 @@ def Part2(x_step, y_step):
 print("Part 1: ", Part1())
 
 # execute part 2
-slopes = [[1,1], [3,1], [5,1], [7,1], [1,2]]
+slopes = [(1,1), (3,1), (5,1), (7,1), (1,2)]
 trees = 1
 for slope in slopes:
     trees *= Part2(slope[0], slope[1])

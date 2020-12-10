@@ -184,7 +184,8 @@ def Part2():
             paths[n+2] += paths[n]
         if n+3 in nodes:
             paths[n+3] += paths[n]
-    return(paths[max(nodes)])
+    # return number of paths that can reach the final node
+    return(paths[final])
 
 
 # execute Part 1

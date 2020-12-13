@@ -151,22 +151,14 @@ def Part2():
     multiplier = 1
     # step through busses with smallest ID first
     for b in busses:
-        # this is the first bus, so
-        # current time is the bus ID and muliplier is also the bus ID
-        if time == 0:
-            time = b[0]
-            multiplier = b[0]
-        else:
-            while True:
-                # go to next possible timestamp that includes all previously
-                # calculated bus IDs
-                time += multiplier
-                # time + offset is evenly divisible by this bus ID, 
-                # so we have found our timestamp that includes this bus
-                if ((time + b[1]) % b[0]) == 0:
-                    # new timestamps to search now factor in this bus ID
-                    multiplier *= b[0]
-                    break
+        # looking for time + offset that is evenly divisible by this bus ID
+        while ((time + b[1]) % b[0]) != 0:
+            # go to next possible timestamp that includes all previously
+            # calculated bus IDs
+            time += multiplier
+        # found our time for this bus, 
+        # new timestamps to search now factor in this bus ID
+        multiplier *= b[0]
     return time
 
 # execute Part 1

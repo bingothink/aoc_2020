@@ -68,17 +68,17 @@ def Solve(turns):
         last = i
     # loop for remaining turns
     while turn < turns:
-        turn += 1
         # if this number has not been spoken, new is 0
         if last not in spoken:
             newlast = 0
         else:
             # this number has been spoken before, find delta
-            newlast = (turn-1) - spoken[last]
+            newlast = turn - spoken[last]
         # update spoken with the last turn's number
-        spoken[last] = turn-1
+        spoken[last] = turn
         # new last is used in the next cycle
         last = newlast
+        turn += 1
     return last
 
 

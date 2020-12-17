@@ -261,18 +261,19 @@ deltas = [(x,y,z,w) for x in range(-1,2) for y in range(-1,2) for z in range(-1,
 
 def addNeighbors(nodes):
     newnodes = set()
-    for n in nodes:
-        for d in deltas:
-            if (n[0]+d[0],n[1]+d[1],n[2]+d[2],n[3]+d[3]) not in nodes:
-                newnodes.add((n[0]+d[0],n[1]+d[1],n[2]+d[2],n[3]+d[3]))
+    for i,j,k,l in nodes:
+        for x,y,z,w in deltas:
+            if (i+x,j+y,k+z,l+w) not in nodes:
+                newnodes.add((i+x,j+y,k+z,l+w))
     for n in newnodes:
         nodes[n] = False
     return nodes
 
 def activeNeighbors(nodes, n):
     active = 0
-    for d in deltas:
-        if (n[0]+d[0],n[1]+d[1],n[2]+d[2],n[3]+d[3]) in nodes and nodes[(n[0]+d[0],n[1]+d[1],n[2]+d[2],n[3]+d[3])]:
+    i,j,k,l = n
+    for x,y,z,w in deltas:
+        if (i+x,j+y,k+z,l+w) in nodes and nodes[(i+x,j+y,k+z,l+w)]:
             active += 1
     return active
 

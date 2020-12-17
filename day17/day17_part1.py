@@ -154,18 +154,19 @@ deltas = [(x,y,z) for x in range(-1,2) for y in range(-1,2) for z in range(-1,2)
 
 def addNeighbors(nodes):
     newnodes = set()
-    for n in nodes:
-        for d in deltas:
-            if (n[0]+d[0],n[1]+d[1],n[2]+d[2]) not in nodes:
-                newnodes.add((n[0]+d[0],n[1]+d[1],n[2]+d[2]))
+    for i,j,k in nodes:
+        for x,y,z in deltas:
+            if (i+x,j+y,k+z) not in nodes:
+                newnodes.add((i+x,j+y,k+z))
     for n in newnodes:
         nodes[n] = False
     return nodes
 
 def activeNeighbors(nodes, n):
     active = 0
-    for d in deltas:
-        if (n[0]+d[0],n[1]+d[1],n[2]+d[2]) in nodes and nodes[(n[0]+d[0],n[1]+d[1],n[2]+d[2])]:
+    i,j,k = n
+    for x,y,z in deltas:
+        if (i+x,j+y,k+z) in nodes and nodes[(i+x,j+y,k+z)]:
             active += 1
     return active
 

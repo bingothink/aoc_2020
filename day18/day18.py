@@ -68,27 +68,35 @@ inp = [l.replace(' ','') for l in open(INPUT).read().splitlines()]
 def evaluateP1(exp):
     # all operations treated the same
     res = exp
+    # find next operation (starting at beginning of string)
     m = re.match("[0-9]+[\+|\*][0-9]+",exp)
-    newstr = exp
     while m:
+        # evaluate the equation
         res = eval(m.group(0))
-        newstr = str(res)+newstr[len(m.group(0)):]
-        m = re.match("[0-9]+[\+|\*][0-9]+",newstr)
+        # use this result plus the rest of the string
+        exp = str(res)+exp[len(m.group(0)):]
+        # try it again on the new string
+        m = re.match("[0-9]+[\+|\*][0-9]+",exp)
     return res
 
 def evaluateP2(exp):
     # additions evaluated first
     adds = re.findall("[0-9]+\+[0-9]+",exp)
+    # while there are additions to be made
     while adds != []:
+        # evaluation this equation
         e = adds[0]
         r = str(eval(e))
+        # replace its location in the expression
         exp = exp.replace(e,r,1)
+        # find the next addition to be made
         adds = re.findall("[0-9]+[\+][0-9]+",exp)
-    res = eval(exp)
-    return res
+    # all that's left is multiplication, return evaluation of it
+    return eval(exp)
 
 def reduce(exp,evaluate):
     openloc = exp.find('(')
+    # no parenthesis found, evaluate expression as-is
     if openloc == -1:
         return str(evaluate(exp))
     else:
@@ -100,12 +108,16 @@ def reduce(exp,evaluate):
             elif exp[x] == ')':
                 opens -= 1
                 if opens == 0:
+                    # found the close, build new expression with everything before,
+                    # everything after, and the new reduced expression in the middle
                     newstr = exp[0:openloc] + reduce(exp[openloc+1:x],evaluate) + exp[x+1:]
+                    # reduce the reduced expression to the smallest form we can
                     return reduce(newstr,evaluate)
         
 def Solve(evalFunc):
     res = 0
     for exp in inp:
+        # reduce and evaluate all expressions, summing the result
         res += int(reduce(exp,evalFunc))
     return res
 

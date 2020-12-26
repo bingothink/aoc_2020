@@ -316,16 +316,6 @@ class Tile:
             return self.leftSide()
         else:
             return [self.topSide(), self.rightSide(), self.bottomSide(), self.leftSide()]
-    def revert(self):
-        # reverse the data 
-        newdata = []
-        for d in self.data:
-            newdata.append(d[::-1])
-        self.data = newdata.copy()
-        # update neighbors
-        temp = self.neighbors[RIGHT]
-        self.neighbors[RIGHT] = self.neighbors[LEFT]
-        self.neighbors[LEFT] = temp
     def invert(self):
         # reverse the data lines
         self.data = invert(self.data)
@@ -356,6 +346,7 @@ def numMatches(tile):
         if t != tile:
             # check all sides of this tile t (top bottom, left, right, and reversed for each)
             tEdges = set(tiles[t].side(ALL) + [x[::-1] for x in tiles[t].side(ALL)])
+            # this tile has an edge in common with my tile
             if len(edges.intersection(tEdges)) > 0:
                 res.append(t)
     return len(res)
@@ -365,39 +356,22 @@ def findNeighbors(tile, searchList):
     for side,data in enumerate(myEdges):
         for t in tiles:
             if t != tile:
-                # check if matching before we do anything else
+                # rotate through looking for all possible matches
+                rotation = 0
+                while rotation < 8 and tiles[t].side(opposite[side]) != data:
+                    if rotation % 4 == 0:
+                        tiles[t].invert()
+                    else:
+                        tiles[t].rotate()
+                    rotation += 1
+                # check if matching 
                 if tiles[t].side(opposite[side]) == data:
                     tiles[tile].neighbors[side] = t
                     tiles[t].neighbors[opposite[side]] = tile
+                    # add this tile to the search list if it's not already there
                     if t not in searchList:
                         searchList.append(t)
                     break
-                # rotate tile through all possible edges
-                rotationsLeft = 3
-                while rotationsLeft > 0:
-                    tiles[t].rotate()
-                    rotationsLeft -= 1
-                    if tiles[t].side(opposite[side]) == data:
-                        tiles[tile].neighbors[side] = t
-                        if t not in searchList:
-                            searchList.append(t)
-                        break
-                tiles[t].invert()
-                if tiles[t].side(opposite[side]) == data:
-                    tiles[tile].neighbors[side] = t
-                    tiles[t].neighbors[opposite[side]] = tile
-                    if t not in searchList:
-                        searchList.append(t)
-                    break
-                rotationsLeft = 3
-                while rotationsLeft > 0:
-                    rotationsLeft -= 1
-                    tiles[t].rotate()
-                    if tiles[t].side(opposite[side]) == data:
-                        tiles[tile].neighbors[side] = t
-                        if t not in searchList:
-                            searchList.append(t)
-                        break
 
 def updateOrientation(startingTile):
     startCol = startingTile
@@ -496,24 +470,18 @@ def Part2():
     # orientations in place, assemble image from top left
     image = assembleImage(topLeft)
     # find monsters 
-    num = findMonsters(image)
-    rotation = 0
+    numMonsters = findMonsters(image)
     # while no monsters are found, keep flipping/rotating image
-    while num == 0:
+    rotation = 0
+    while numMonsters == 0:
         if rotation % 4 == 0:
             image = invert(image)
         else:
             image = rotate(image)
-        num = findMonsters(image)
+        numMonsters = findMonsters(image)
         rotation += 1
-    # count hashes in image
-    cnt = 0
-    for c in "".join(image):
-        if c == "#":
-            cnt += 1
-    # subtract 15 hashes in each sea monster
-    cnt -= (15 * num)
-    return cnt
+    # return count of hashes in image minus 15 hashes in each sea monster
+    return ''.join(image).count('#') - (15 * numMonsters)
 
 # execute Part 2
 print("Part 2:", Part2())
